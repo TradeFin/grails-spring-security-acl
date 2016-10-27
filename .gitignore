@@ -9,3 +9,8 @@
 .idea
 build
 cobertura.ser
+/bin/
+.project
+.classpath
+.settings/
+.java-version
