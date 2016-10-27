@@ -12,6 +12,7 @@ buildscript {
 		classpath 'org.asciidoctor:asciidoctor-gradle-plugin:1.5.2'
 		classpath 'org.asciidoctor:asciidoctorj-epub3:1.5.0-alpha.4'
 		classpath 'org.asciidoctor:asciidoctorj-pdf:1.5.0-alpha.9'
+		classpath 'com.layer:gradle-git-repo-plugin:2.0.2'
 	}
 }
 
@@ -21,6 +22,7 @@ plugins {
 }
 
 apply from: 'gradle/plugin.gradle'
+apply plugin: 'git-repo'
 
 dependencies {
 
@@ -35,4 +37,23 @@ dependencies {
 	compile "org.grails:grails-datastore-gorm:$gormVersion"
 	compile "org.grails:grails-datastore-simple:$gormVersion"
 
+}
+
+repositories {
+	github("TradeFin", "tf-maven", "master", "releases")
+}
+
+gitPublishConfig {
+	// home = "~/tradefin/code"
+	org = "TradeFin"
+	repo = "tf-maven"
+}
+
+publishing {
+	repositories {
+		maven {
+			name "tradefin"
+			url "file://${gitPublishConfig.home}/${gitPublishConfig.org}/${gitPublishConfig.repo}/releases"
+		}
+	}
 }
