@@ -145,8 +145,9 @@ class AclService implements MutableAclService {
 
 	protected void deleteEntries(AclObjectIdentity oid) {
 		if (oid) {
-			AclEntry.where { aclObjectIdentity == oid }.deleteAll()
-			AclEntry.withSession { it.flush() }
+			deleteEntries(AclEntry.where { aclObjectIdentity == oid }.id().list().collect {
+				AclEntry.load(it)
+			})
 		}
 	}
 
@@ -295,7 +296,7 @@ class AclService implements MutableAclService {
 	}
 
 	protected save(bean) {
-		if (!bean.save()) {
+		if (!bean.save(flush: true)) {
 			if (log.warnEnabled) {
 				def message = new StringBuilder("problem creating ${bean.getClass().simpleName}: $bean")
 				def locale = LocaleContextHolder.getLocale()
